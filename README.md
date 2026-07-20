@@ -23,20 +23,19 @@ Open-source browser tool to verify the cryptographic integrity of ViriSIM audit 
 
 ### 1. Get Your Audit JSON
 
-- **Sample Audit:** Use the link above to download a sample audit from our regulator share page
-- **Your Own Audit:** From your ViriSIM dashboard, click **"Download Hashed JSON"** or **"Copy Hash Data"** in the Additional Information section
+- **Sample Audit:** Use the link above to download a sample audit from our regulator share page. From the ViriSIM dashboard, click **"Hashed Audit"** in the Additional Audit Information section
 
 ### 2. Verify the Hash
 
 1. Open the **Live Verification Tool**
 2. Paste your audit JSON or upload the file
-3. The **"Stored Hash"** field auto-populates from the audit
+3. Copy the **"Log Integrity Hash"** from the sample audit link and paste to the **"Stored Hash"** Input in the the **Live Verification Tool"**
 4. Click **"Compute & Test"** — Result shows ✅ MATCH or ❌ NO MATCH
 
 ### 3. Verify the Chain (Optional)
 
-1. Enter the **Previous Integrity Hash** and **Previous Chain Hash** from the previous audit record
-2. The **"Stored Chain Hash"** auto-populates
+1. Enter the **Log Previous Hash** and **Log Previous Chain Hash** from the audit record in the link
+2. Copy the **"Log Chain Hash"** from the sample audit link and paste to the **"Stored Chain Hash"** Input in the the **Live Verification Tool"**
 3. Click **"Verify Chain"** — Result shows ✅ CHAIN VALID or ❌ CHAIN BROKEN
 
 ---
