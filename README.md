@@ -2,9 +2,10 @@
 
 Open-source browser tool to verify the cryptographic integrity of ViriSIM audit logs.
 
-**Repository:** [https://github.com/Virideed/virisim-hash-verify](https://github.com/Virideed/virisim-hash-verify)
+## Links
 
-**Live Tool:** [https://virideed.github.io/virisim-hash-verify/](https://virideed.github.io/virisim-hash-verify/) (enable GitHub Pages first)
+- **Live Verification Tool:** [https://virideed.github.io/virisim-hash-verify/](https://virideed.github.io/virisim-hash-verify/)
+- **Get a Sample Audit:** [https://virideed.com/virisim/regulator-share?search=va8N1SPsEJRMnHNcIKq-regurlna5k9km9](https://virideed.com/virisim/regulator-share?search=va8N1SPsEJRMnHNcIKq-regurlna5k9km9)
 
 ---
 
@@ -22,11 +23,12 @@ Open-source browser tool to verify the cryptographic integrity of ViriSIM audit 
 
 ### 1. Get Your Audit JSON
 
-Download your audit log from the **"Additional Information"** section of your ViriSIM audit report. Click **"Copy Hash Data"** or **"Download Hashed JSON"** to export the audit data.
+- **Sample Audit:** Use the link above to download a sample audit from our regulator share page
+- **Your Own Audit:** From your ViriSIM dashboard, click **"Download Hashed JSON"** or **"Copy Hash Data"** in the Additional Information section
 
 ### 2. Verify the Hash
 
-1. Open `index.html` in your browser (or use the live link above)
+1. Open the **Live Verification Tool**
 2. Paste your audit JSON or upload the file
 3. The **"Stored Hash"** field auto-populates from the audit
 4. Click **"Compute & Test"** — Result shows ✅ MATCH or ❌ NO MATCH
