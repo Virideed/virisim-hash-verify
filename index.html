@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ViriSIM Hash Verifier</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 960px;
+            margin: 32px auto;
+            padding: 20px;
+            background: #f7f8fa;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        }
+        h1 {
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 4px;
+        }
+        .sub {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 4px;
+            margin-top: 6px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            resize: vertical;
+            background: #fafbfc;
+        }
+        #jsonInput {
+            height: 200px;
+        }
+        .row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .row .col {
+            flex: 1;
+            min-width: 200px;
+        }
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            margin-right: 6px;
+            transition: background 0.15s;
+        }
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #15803d;
+        }
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #d0d7de;
+            color: #1e1e1e;
+        }
+        .btn-outline:hover {
+            background: #f0f0f0;
+        }
+        .result-box {
+            margin-top: 16px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            word-break: break-all;
+            display: none;
+            border-left: 4px solid;
+        }
+        .result-box.pass {
+            display: block;
+            background: #ecfdf5;
+            border-left-color: #16a34a;
+        }
+        .result-box.fail {
+            display: block;
+            background: #fef2f2;
+            border-left-color: #dc2626;
+        }
+        .result-box.info {
+            display: block;
+            background: #eff6ff;
+            border-left-color: #2563eb;
+        }
+        .hash-display {
+            background: #f0f2f5;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 6px 0 8px 0;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .badge.pass {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .badge.fail {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+        .divider {
+            border: none;
+            border-top: 1px solid #e5e7eb;
+            margin: 18px 0;
+        }
+        .file-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .file-row input[type="file"] {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .flex {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🔐 ViriSIM Hash Verifier</h1>
+        <p class="sub">Paste your audit JSON or upload a file.</p>
+
+        <div class="file-row">
+            <input type="file" id="fileInput" accept=".json" />
+            <button class="btn btn-outline" onclick="loadFile()">Load File</button>
+        </div>
+
+        <label>Audit JSON</label>
+        <textarea id="jsonInput" placeholder='Paste your audit JSON here...'></textarea>
+    </div>
+
+    <!-- SECTION 1: Full Log Hash Verification -->
+    <div class="container">
+        <h2>📄 1. Full Log Hash Verification</h2>
+        <p class="sub">Test the computed hash against the stored <code>integrityHash</code> from the audit.</p>
+
+        <label>Stored Hash (from audit)</label>
+        <textarea id="storedHashInput" placeholder="sha256:abc123..." style="height:44px;"></textarea>
+
+        <div class="flex">
+            <button class="btn btn-primary" onclick="computeAndTestFullHash()">Compute &amp; Test</button>
+            <button class="btn btn-outline" onclick="clearResult('fullResult')">Clear</button>
+        </div>
+
+        <div id="fullResult" class="result-box"></div>
+    </div>
+
+    <!-- SECTION 2: Chain Hash Verification -->
+    <div class="container">
+        <h2>🔗 2. Chain Hash Verification</h2>
+        <p class="sub">Verify the chain link using <code>previousIntegrityHash</code>, <code>previousChainHash</code>, and the stored <code>chainHash</code>.</p>
+
+        <div class="row">
+            <div class="col">
+                <label>Previous Integrity Hash</label>
+                <textarea id="prevIntegrityHash" placeholder="sha256:abc123..." style="height:40px;"></textarea>
+            </div>
+            <div class="col">
+                <label>Previous Chain Hash</label>
+                <textarea id="prevChainHash" placeholder="sha256:def456..." style="height:40px;"></textarea>
+            </div>
+            <div class="col">
+                <label>Stored Chain Hash (from audit)</label>
+                <textarea id="storedChainHash" placeholder="sha256:xyz789..." style="height:40px;"></textarea>
+            </div>
+        </div>
+
+        <div class="flex">
+            <button class="btn btn-primary" onclick="verifyChain()">Verify Chain</button>
+            <button class="btn btn-outline" onclick="clearResult('chainResult')">Clear</button>
+        </div>
+
+        <div id="chainResult" class="result-box"></div>
+    </div>
+
+    <div class="footer">
+        <a href="https://github.com/Virideed/virisim-hash-verify" target="_blank">GitHub</a> &bull; Open source
+    </div>
+
+    <script>
+        // =============================================
+        // HELPERS
+        // =============================================
+
+        function getPayload() {
+            const raw = document.getElementById('jsonInput').value.trim();
+            if (!raw) { alert('Please paste JSON first.'); return null; }
+            try { return JSON.parse(raw); } catch (e) { alert('Invalid JSON: ' + e.message); return null; }
+        }
+
+        function showResult(id, pass, title, lines) {
+            const el = document.getElementById(id);
+            el.className = 'result-box ' + (pass ? 'pass' : 'fail');
+            el.innerHTML = `
+                <strong>${pass ? '✅ ' + title : '❌ ' + title}</strong><br>
+                ${lines.join('<br>')}
+            `;
+            el.style.display = 'block';
+        }
+
+        function showInfo(id, title, lines) {
+            const el = document.getElementById(id);
+            el.className = 'result-box info';
+            el.innerHTML = `<strong>${title}</strong><br>${lines.join('<br>')}`;
+            el.style.display = 'block';
+        }
+
+        function clearResult(id) {
+            const el = document.getElementById(id);
+            el.className = 'result-box';
+            el.style.display = 'none';
+            el.innerHTML = '';
+        }
+
+        function loadFile() {
+            const file = document.getElementById('fileInput').files[0];
+            if (!file) { alert('Select a JSON file.'); return; }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('jsonInput').value = e.target.result;
+                clearResult('fullResult');
+                clearResult('chainResult');
+            };
+            reader.readAsText(file);
+        }
+
+        async function sha256(content) {
+            const enc = new TextEncoder().encode(content);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return 'sha256:' + Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function normalizeArray(arr) {
+            if (!arr || !Array.isArray(arr) || arr.length === 0) return 'N/A';
+            const sorted = [...arr].sort((a, b) => {
+                if (typeof a === 'string' && typeof b === 'string') return a.localeCompare(b);
+                if (typeof a === 'object' && typeof b === 'object') {
+                    const ak = Object.keys(a).sort(), bk = Object.keys(b).sort();
+                    return String(a[ak[0]] || '').localeCompare(String(b[bk[0]] || ''));
+                }
+                return 0;
+            });
+            return sorted.map(item => {
+                if (typeof item === 'string') return item;
+                if (item && typeof item === 'object') {
+                    const keys = Object.keys(item).sort();
+                    return keys.map(k => `${k}:${item[k] || 'N/A'}`).join(',');
+                }
+                return String(item);
+            }).join(' | ');
+        }
+
+        function flattenToPrimitives(obj, prefix) {
+            const flat = {};
+            const clean = JSON.parse(JSON.stringify(obj));
+            delete clean.logIntegrity;
+            delete clean.integrity;
+            if (clean.meta) delete clean.meta.resolution;
+
+            function walk(o, p) {
+                if (!o || typeof o !== 'object') return;
+                for (const k in o) {
+                    const v = o[k];
+                    const key = p ? p + '_' + k : k;
+                    if (v === null || v === undefined) flat[key] = '';
+                    else if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') flat[key] = v;
+                    else if (Array.isArray(v)) flat[key] = normalizeArray(v);
+                    else if (typeof v === 'object') walk(v, key);
+                }
+            }
+            walk(clean, '');
+            const sorted = {};
+            Object.keys(flat).sort().forEach(k => sorted[k] = flat[k]);
+            return sorted;
+        }
+
+        // =============================================
+        // 1. FULL LOG HASH
+        // =============================================
+
+        async function computeAndTestFullHash() {
+            const payload = getPayload();
+            if (!payload) return;
+
+            const stored = document.getElementById('storedHashInput').value.trim();
+            if (!stored) {
+                alert('Please paste the stored hash from the audit.');
+                return;
+            }
+
+            const flat = flattenToPrimitives(payload);
+            const jsonStr = JSON.stringify(flat);
+            const computed = await sha256(jsonStr);
+            const pass = computed === stored;
+
+            const lines = [
+                '<div class="hash-display"><strong>Computed:</strong> ' + computed + '</div>',
+                '<div class="hash-display"><strong>Stored:</strong> ' + stored + '</div>',
+                '<span class="badge ' + (pass ? 'pass' : 'fail') + '">' + (pass ? '✅ MATCH' : '❌ NO MATCH') + '</span>'
+            ];
+            showResult('fullResult', pass, pass ? 'Verification Passed' : 'Verification Failed', lines);
+        }
+
+        // =============================================
+        // 2. CHAIN HASH
+        // =============================================
+
+        async function verifyChain() {
+            const payload = getPayload();
+            if (!payload) return;
+
+            const prevInt = document.getElementById('prevIntegrityHash').value.trim();
+            const prevChain = document.getElementById('prevChainHash').value.trim();
+            const storedChain = document.getElementById('storedChainHash').value.trim();
+
+            if (!prevInt || !prevChain || !storedChain) {
+                alert('Please fill in all three chain hash fields.');
+                return;
+            }
+
+            const flat = flattenToPrimitives(payload);
+            const jsonStr = JSON.stringify(flat);
+            const chainInput = prevInt + prevChain + jsonStr;
+            const computed = await sha256(chainInput);
+            const pass = computed === storedChain;
+
+            const lines = [
+                '<div class="hash-display"><strong>Computed Chain Hash:</strong> ' + computed + '</div>',
+                '<div class="hash-display"><strong>Stored Chain Hash:</strong> ' + storedChain + '</div>',
+                '<span class="badge ' + (pass ? 'pass' : 'fail') + '">' + (pass ? '✅ CHAIN VALID' : '❌ CHAIN BROKEN') + '</span>'
+            ];
+            showResult('chainResult', pass, pass ? 'Chain Verified' : 'Chain Verification Failed', lines);
+        }
+
+        // Auto-populate stored hash from audit if present
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('jsonInput');
+            const observer = new MutationObserver(() => {
+                try {
+                    const data = JSON.parse(input.value);
+                    const h = data.logIntegrity?.integrityHash || data.integrity?.hash || '';
+                    if (h) document.getElementById('storedHashInput').value = h;
+                    const ch = data.logIntegrity?.chainHash || data.integrity?.chainHash || '';
+                    if (ch) document.getElementById('storedChainHash').value = ch;
+                } catch (_) {}
+            });
+            observer.observe(input, { childList: true, subtree: true, characterData: true });
+        });
+    </script>
+
+</body>
+  </html>
