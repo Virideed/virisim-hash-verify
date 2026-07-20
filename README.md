@@ -34,7 +34,7 @@ Open-source browser tool to verify the cryptographic integrity of ViriSIM audit 
 
 ### 3. Verify the Chain (Optional)
 
-1. Enter the **Log Previous Hash** and **Log Previous Chain Hash** from the audit record in the link
+1. Enter the **Log Previous Hash** and **Log Previous Chain Hash** from the audit record in the link. Both verifiable from previous audit.
 2. Copy the **"Log Chain Hash"** from the sample audit link and paste to the **"Stored Chain Hash"** Input in the the **Live Verification Tool"**
 3. Click **"Verify Chain"** — Result shows ✅ CHAIN VALID or ❌ CHAIN BROKEN
 
