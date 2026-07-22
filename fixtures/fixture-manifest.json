@@ -1,0 +1,8 @@
+{
+  "expectedHashes": {
+    "integrityHash": "sha256:1925365ba06b2ef7af2ea2a2bd1187bb934756716de42d1af2d2ceaf361d59b4",
+    "chainHash": "sha256:f419d9721c97fd0f81b600c2f1df4e016e89d0a908b2f24d6da87d7166e46fd4",
+    "previousHash": "sha256:70e4046f01f502e2e073068a315160ded819c7b5553b8f9769057bda074b50d9",
+    "previousChainHash": "sha256:9bfc4d87719f639116334fcd9d5525229c69f5f4903fdbb635d0f8c295738537"
+  }
+}
